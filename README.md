@@ -5,5 +5,7 @@
 Prerequisites:
 </h4>
   • Python 3.8 or above
-  • Flask
-  ```pip install flask```
+  • Flask <br>
+```
+pip install flask
+```
