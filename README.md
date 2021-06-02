@@ -1,6 +1,6 @@
 
   <h1 align="center">Spotify Song Recommender 🎵</h1>
-  <p align=center>Made with Spotify API and flask</p>
+  <p align=center>Made with Spotify API and flask with Bootstrap</p>
  
   
   ### Prerequisites:    
