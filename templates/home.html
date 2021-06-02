@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{url_for('static',filename='logo.png')}}"/>
+    <title>Spotify Song Recommender</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{url_for('static',filename='main.css')}}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet">
+</head> <p
+
+
+<body>
+    <br><br>
+<div id="title">
+    <img src="{{url_for('static',filename='logo.png')}}" class="rounded float-right" alt="logo" width="90" height="80">
+    Spotify Song Recommender using Python
+</div>
+<br>
+<p class="text-center">Note: <b>Only your first five songs can be accepted for recommendation</b></p>
+<form id="form" method="POST" action="/">
+    <div style="position:relative; left:400px; top:70px;">
+        <h5>
+    <label for="numsong">How many songs do you want to display: </label><br>
+        </h5>
+        <p style="position: relative; left:70px; top:5px;">
+    <input type="number" id="numsong" name="num_tracks_to_visualise" value="{{request.form.song}}" required="required" />
+    <input class="btn btn-primary" type="Submit" value="Submit">
+        </p>
+    </div>
+    <div class="alert alert-light">
+        <h6>
+            <print>Your last played songs are:</print>
+        </h6>
+        <p><strong>
+    <ol>
+    {% for disp in display %}
+    <li>{{disp}}</li>
+    {% endfor %}
+    </ol>
+    </strong>
+    </p>
+    </div>
+</form>
+<form id="form" method="POST" action="/recommendation">
+    <div style="position:relative; left:1200px; top:-9px;">
+        <h5>
+    <label for="ind">Enter the number of song for basis:</label><br>
+        </h5>
+        <p style="position: relative; left:40px; top:5px;">
+    <input type="text" id=ind name="index" value="{{request.form.index}}" required="required" />
+    <input class="btn btn-primary" type="Submit" value="Submit">
+        </p>
+    </div>
+    <div class="alert2 alert-primary">
+        <h6>
+            <print>Here are the recommended songs:</print>
+        </h6>
+    <ol>
+        {% for reco in recom %}
+        <li>{{reco}}</li>
+        {% endfor %}
+    </ol>
+    </div>
+</form>
+
+<p style="position:relative; bottom:-440px; text-align:center;">
+    <small>
+    Spotify Song Recommender using Spotify API<br>
+    For more information, visit <a href="https://developer.spotify.com/" target="_blank"><b>https://developer.spotify.com/</b></a>
+    </small>
+</p>
+
+
+
+<p style="position:relative; bottom:-435px; text-align:center;">
+    <a href="/" class="btn btn-warning">Refresh</a>
+</p>
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
+</body>
+</html>
+

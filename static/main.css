@@ -1,0 +1,68 @@
+html, body {
+  height: 100%;
+  font-size: 100%;
+  padding: 0%;
+  position: relative;
+  background-image: url("../static/bg3.gif");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
+
+p.round1{
+  border: 2px solid green;
+  border-width: 5px;
+}
+
+#title {
+  margin: auto;
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 27px;
+  color: white;
+  box-sizing: border-box;
+  width: 550px;
+  height: 130px;
+  padding: 25px;
+  bottom: 110px;
+  border: 5px solid yellowgreen;
+  background-color: green;
+}
+
+.alert {
+    left: 340px;
+    margin: auto;
+    position: absolute;
+    top: 400px;
+    text-align: center;
+    width: 25%;
+}
+
+.alert2 {
+  right: 330px;
+  margin: auto;
+  position: absolute;
+  top: 400px;
+  text-align: center;
+  width: 25%;
+}
+
+.logo {
+  padding: 5px;
+  width: 100px;
+  height: auto;
+  max-width: 100%;
+}
+
+.btn {
+  padding: 7px 7px;
+  line-height: 0.8;
+}
+
+label {
+  color: green;
+}
+
+
+
+
