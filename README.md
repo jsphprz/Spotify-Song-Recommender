@@ -1,5 +1,9 @@
 
 ## Spotify Song Recommender using Python
-<h6>
+#### Made with flask and Bootstrap 4.1
+<h4>
 Prerequisites:
-</h6>
+</h4>
+  • Python 3.8 or above
+  • Flask
+  ```pip install flask```
