@@ -4,85 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{url_for('static',filename='logo.png')}}"/>
-    <title>Spotify Song Recommender</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{url_for('static',filename='main.css')}}">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet">
-</head> <p
+    <title>Your Spotify Top 10 Tracks</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & Babel CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: url('/static/bg3.gif') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff; 
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+    </style>
+</head>
 
-<body>
-    <br><br>
-<div id="title">
-    <img src="{{url_for('static',filename='logo.png')}}" class="rounded float-right" alt="logo" width="90" height="80">
-    Spotify Song Recommender using Python
-</div>
-<br>
-<p class="text-center">Note: <b>Only your first five songs can be accepted for recommendation</b></p>
-<form id="form" method="POST" action="/">
-    <div style="position:relative; left:400px; top:70px;">
-        <h5>
-    <label for="numsong">How many songs do you want to display: </label><br>
-        </h5>
-        <p style="position: relative; left:70px; top:5px;">
-    <input type="number" id="numsong" name="num_tracks_to_visualise" value="{{request.form.song}}" required="required" />
-    <input class="btn btn-primary" type="Submit" value="Submit">
-        </p>
-    </div>
-    <div class="alert alert-light">
-        <h6>
-            <print>Your last played songs are:</print>
-        </h6>
-        <p><strong>
-    <ol>
-    {% for disp in display %}
-    <li>{{disp}}</li>
-    {% endfor %}
-    </ol>
-    </strong>
-    </p>
-    </div>
-</form>
-<form id="form" method="POST" action="/recommendation">
-    <div style="position:relative; left:1200px; top:-9px;">
-        <h5>
-    <label for="ind">Enter the number of song for basis:</label><br>
-        </h5>
-        <p style="position: relative; left:40px; top:5px;">
-    <input type="text" id=ind name="index" value="{{request.form.index}}" required="required" />
-    <input class="btn btn-primary" type="Submit" value="Submit">
-        </p>
-    </div>
-    <div class="alert2 alert-primary">
-        <h6>
-            <print>Here are the recommended songs:</print>
-        </h6>
-    <ol>
-        {% for reco in recom %}
-        <li>{{reco}}</li>
-        {% endfor %}
-    </ol>
-    </div>
-</form>
+<body class="min-h-screen relative overflow-x-hidden">
+    <!-- Background decorative blur elements -->
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-green-600 rounded-full blur-[150px] opacity-20 pointer-events-none"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600 rounded-full blur-[150px] opacity-20 pointer-events-none"></div>
+    
+    <script>
+        // Pass session state from Flask to React
+        window.LOGGED_IN = {{ 'true' if logged_in else 'false' }};
+    </script>
+    
+    <div id="root"></div>
 
-<p style="position:relative; bottom:-440px; text-align:center;">
-    <small>
-    Spotify Song Recommender using Spotify API<br>
-    For more information, visit <a href="https://developer.spotify.com/" target="_blank"><b>https://developer.spotify.com/</b></a>
-    </small>
-</p>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
+        function App() {
+            const [loggedIn] = useState(window.LOGGED_IN);
+            const [history, setHistory] = useState(null);
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState(null);
 
+            useEffect(() => {
+                if (loggedIn) {
+                    fetchHistory();
+                }
+            }, [loggedIn]);
 
-<p style="position:relative; bottom:-435px; text-align:center;">
-    <a href="/" class="btn btn-warning">Refresh</a>
-</p>
+            const fetchHistory = async () => {
+                setLoading(true); setError(null);
+                try {
+                    const res = await fetch('/api/tracks');
+                    if (res.status === 401) {
+                        window.location.href = '/login';
+                        return;
+                    }
+                    const data = await res.json();
+                    if (data.error) setError(data.error);
+                    else setHistory(data.tracks);
+                } catch (err) {
+                    setError("Failed to fetch tracks");
+                }
+                setLoading(false);
+            };
 
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
+            return (
+                <div className={`container mx-auto px-4 max-w-3xl relative z-10 flex flex-col min-h-screen ${!loggedIn ? 'justify-center pb-32' : 'py-12'}`}>
+                    <div className="flex flex-col items-center mb-10">
+                        <img src="/static/logo.png" alt="logo" className="w-24 h-24 mb-4 rounded-full shadow-lg border-4 border-green-500 bg-white" />
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 text-center pb-2">
+                            Your Spotify Top 10 Tracks
+                        </h1>
+                        <p className="mt-2 text-gray-400 text-center">View your top 10 most played tracks.</p>
+                    </div>
+
+                    {!loggedIn ? (
+                        <div className="flex justify-center mb-8">
+                            <a href="/login" className="bg-[#1DB954] hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full shadow-lg transition-all transform hover:scale-105 flex items-center">
+                                Connect with Spotify
+                            </a>
+                        </div>
+                    ) : (
+                        <div className="bg-gray-800 bg-opacity-60 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-gray-700 mx-auto max-w-2xl w-full">
+                            <div className="flex justify-between items-center mb-6 border-b border-gray-600 pb-4">
+                                <h2 className="text-2xl font-bold text-white">Your Top 10 Tracks</h2>
+                                <button onClick={fetchHistory} disabled={loading} className="bg-[#1DB954] hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors text-sm">
+                                    {loading ? 'Refreshing...' : 'Refresh'}
+                                </button>
+                            </div>
+
+                            {error && <div className="bg-red-500 bg-opacity-20 border border-red-500 text-red-300 p-3 rounded-lg mb-4">{error}</div>}
+
+                            {loading && !history ? (
+                                <div className="flex justify-center py-8">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1DB954]"></div>
+                                </div>
+                            ) : history ? (
+                                <div className="mt-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                                    <ul className="space-y-3">
+                                        {history.map((song, i) => (
+                                            <li key={i} className="bg-gray-700 bg-opacity-50 p-4 rounded-lg flex items-center text-md">
+                                                <span className="text-[#1DB954] font-bold mr-4 text-lg w-6 text-right">{i + 1}.</span>
+                                                <span className="font-medium">{song}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ) : null}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
 </body>
 </html>
 
