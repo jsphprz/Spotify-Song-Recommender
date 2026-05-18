@@ -79,6 +79,11 @@ def home():
         return render_template('home.html', logged_in=False)
     return render_template('home.html', logged_in=True)
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
+
 @app.route('/api/tracks', methods=['GET'])
 def api_tracks():
     if "access_token" not in session:
