@@ -1,6 +1,7 @@
 <div align="center">
   <h1>Spotify Top 10 Tracks Viewer 🎵</h1>
   <p>View your top 10 most played tracks on Spotify in a sleek, modern interface.</p>
+  <p><strong>Live demo:</strong> https://spotify-top-10.onrender.com</p>
   <p>Built with <strong>Flask</strong>, <strong>React</strong>, and <strong>Tailwind CSS</strong>.</p>
 </div>
 
@@ -50,4 +51,4 @@
 2. Open your web browser and navigate to `http://127.0.0.1:5000`.
 3. Click **Connect with Spotify**, authorize the app, and see your Top Tracks!
 
-> **Note:** The Spotify API recently deprecated third-party access to the "Recommendations" endpoint. This app was modernized to pivot to the `user-top-read` scope, ensuring reliable, long-term functionality by displaying your all-time favorite loops!
+> **Note:** The Spotify API recently deprecated third-party access to the "Recommendations" endpoint. This app was modernized to pivot to the `user-top-read` scope, ensuring reliable, long-term fu[...]
