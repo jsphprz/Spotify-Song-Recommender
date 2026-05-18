@@ -10,7 +10,8 @@ from spotify import SpotifyRecom
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+# Use a static secret key from environment variables so sessions survive server restarts/workers
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "super-secret-default-key")
 
 # Replace these with your App's Client ID and Secret from the Spotify Developer Dashboard
 CLIENT_ID = os.environ.get("SPOTIFY_CLIENT_ID", "your_client_id_here")
