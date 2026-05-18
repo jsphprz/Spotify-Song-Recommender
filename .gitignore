@@ -153,6 +153,5 @@ Thumbs.db
 
 # env
 .env
-requirements.txt
 
 # End of https://www.toptal.com/developers/gitignore/api/python
