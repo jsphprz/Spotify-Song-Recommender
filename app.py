@@ -1,8 +1,11 @@
 import os
 import urllib.parse
 import requests
+import base64
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify
+from werkzeug.middleware.proxy_fix import ProxyFix
 from dotenv import load_dotenv
+
 import spotify
 from spotify import SpotifyRecom
 
@@ -10,6 +13,9 @@ from spotify import SpotifyRecom
 load_dotenv()
 
 app = Flask(__name__)
+# Fix for getting correct https redirects behind proxies like Render/Heroku
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
 # Use a static secret key from environment variables so sessions survive server restarts/workers
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "super-secret-default-key")
 
@@ -40,16 +46,26 @@ def callback():
         return f"Authentication failed: {request.args.get('error')}"
     
     code = request.args.get('code')
+    
+    # Use Basic Auth Header as recommended by Spotify OAuth 2.0 docs
+    auth_header = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode('utf-8')
+    headers = {
+        "Authorization": f"Basic {auth_header}",
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+    
     req_body = {
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": REDIRECT_URI,
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET
+        "redirect_uri": REDIRECT_URI
     }
     
-    response = requests.post(TOKEN_URL, data=req_body)
-    token_info = response.json()
+    try:
+        # Add timeout so the app doesn't hang indefinitely causing the browser to stay on the Spotify Loading screen
+        response = requests.post(TOKEN_URL, data=req_body, headers=headers, timeout=10)
+        token_info = response.json()
+    except requests.exceptions.RequestException as e:
+        return f"Error communicating with Spotify: {str(e)}"
     
     if "access_token" not in token_info:
         return f"Failed to get access token from Spotify: {token_info}"

@@ -29,7 +29,8 @@ class SpotifyRecom:
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.token}"
-            }
+            },
+            timeout=10
         )
         return response
 
@@ -40,6 +41,7 @@ class SpotifyRecom:
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.token}"
-            }
+            },
+            timeout=10
         )
         return response
